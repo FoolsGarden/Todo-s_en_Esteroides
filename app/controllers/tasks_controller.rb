@@ -2,7 +2,6 @@ class TasksController
 
   def initialize(input)
     puts "*" * 50
-    # @input = input
     @command = input[0]
     @view = TasksView.new
     menu(input) 
@@ -11,7 +10,7 @@ class TasksController
   def menu(input)
     task = input[1..-1].join(' ')
     case @command
-      when "add" then to_do_list(task)
+      when "add" then add(task)
       when "index" then index
       when "delete" then delete(task)
       when "complete" then complete(task)
@@ -21,13 +20,14 @@ class TasksController
     end
   end
 
-  def to_do_list(task)
+  def add(task)
     Task.create(task: task)
     @view.create(task)
   end
 
   def index
-   @view.index
+   tasks = Task.all
+   @view.index(tasks)
   end
 
   def delete(input)
@@ -43,8 +43,8 @@ class TasksController
   def complete(input)
    Task.all.each_with_index do |task, index|
       if input.to_i == index + 1
-       task.update_attributes(complete: true)
-       @view.update(task.task)
+        task.update_attributes(complete: true)
+        @view.update(task.task)
       end
     end
   end
